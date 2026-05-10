@@ -105,6 +105,115 @@
         }
 
         /* ============================================
+           PANTALLA DE ENTRADA (NUEVA)
+           ============================================ */
+        .entry-screen {
+            position: fixed;
+            inset: 0;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            z-index: 1000;
+            background: linear-gradient(180deg,
+                    var(--bg-peach-light) 0%,
+                    var(--bg-peach) 30%,
+                    var(--bg-peach-deep) 70%,
+                    #d4b896 100%);
+            transition: opacity 0.8s ease, transform 0.8s ease;
+        }
+
+        .entry-screen::before {
+            content: '';
+            position: absolute;
+            inset: 0;
+            background-image:
+                radial-gradient(ellipse at 20% 30%, rgba(224, 122, 95, 0.15) 0%, transparent 50%),
+                radial-gradient(ellipse at 80% 70%, rgba(129, 178, 154, 0.15) 0%, transparent 50%);
+            pointer-events: none;
+        }
+
+        .entry-screen.hidden {
+            opacity: 0;
+            pointer-events: none;
+            transform: scale(1.1);
+        }
+
+        .entry-content {
+            text-align: center;
+            padding: 2rem;
+            position: relative;
+            z-index: 10;
+        }
+
+        .entry-icon {
+            width: 120px;
+            height: 120px;
+            margin: 0 auto 1.5rem;
+            animation: gentlePulse 3s ease-in-out infinite;
+        }
+
+        .entry-title {
+            font-family: 'Great Vibes', cursive;
+            font-size: clamp(2.5rem, 8vw, 4rem);
+            color: var(--accent-coral);
+            text-shadow: 2px 2px 8px rgba(224, 122, 95, 0.2);
+            margin-bottom: 0.5rem;
+        }
+
+        .entry-subtitle {
+            font-family: 'Playfair Display', serif;
+            font-size: clamp(1rem, 2.5vw, 1.3rem);
+            color: var(--accent-coral-dark);
+            font-style: italic;
+            margin-bottom: 2rem;
+            opacity: 0.85;
+        }
+
+        .entry-button {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.8rem;
+            padding: 1rem 2rem;
+            font-family: 'Great Vibes', cursive;
+            font-size: 1.5rem;
+            color: white;
+            background: linear-gradient(135deg, var(--accent-coral) 0%, var(--accent-coral-dark) 100%);
+            border: none;
+            border-radius: 50px;
+            cursor: pointer;
+            box-shadow: 0 8px 30px rgba(224, 122, 95, 0.4);
+            transition: all 0.3s ease;
+            animation: buttonGlowEntry 2s ease-in-out infinite;
+            -webkit-tap-highlight-color: transparent;
+        }
+
+        @keyframes buttonGlowEntry {
+
+            0%,
+            100% {
+                box-shadow: 0 8px 30px rgba(224, 122, 95, 0.4);
+            }
+
+            50% {
+                box-shadow: 0 8px 40px rgba(224, 122, 95, 0.6), 0 0 25px rgba(224, 122, 95, 0.3);
+            }
+        }
+
+        .entry-button:hover {
+            transform: scale(1.08);
+            box-shadow: 0 12px 40px rgba(224, 122, 95, 0.5);
+        }
+
+        .entry-button:active {
+            transform: scale(0.98);
+        }
+
+        .entry-button svg {
+            width: 20px;
+            height: 20px;
+        }
+
+        /* ============================================
            PANTALLA DE BIENVENIDA
            ============================================ */
         .welcome-screen {
@@ -1113,6 +1222,11 @@
                 width: 14px;
                 height: 14px;
             }
+
+            .entry-icon {
+                width: 90px;
+                height: 90px;
+            }
         }
 
         @media (prefers-reduced-motion: reduce) {
@@ -1129,6 +1243,30 @@
                 display: none;
             }
         }
+
+        .footer {
+            position: fixed;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            padding: 15px 20px;
+            text-align: center;
+            background: linear-gradient(180deg, transparent 0%, rgba(212, 184, 150, 0.3) 100%);
+            z-index: 5;
+            pointer-events: none;
+        }
+
+        .footer p {
+            font-family: 'Playfair Display', serif;
+            font-size: 0.85rem;
+            color: var(--accent-coral-dark);
+            opacity: 0.7;
+            font-style: italic;
+        }
+
+        .footer .heart {
+            color: var(--accent-coral);
+        }
     </style>
 </head>
 
@@ -1144,6 +1282,33 @@
 
     <!-- Overlay para carta -->
     <div class="letter-overlay" id="letter-overlay"></div>
+
+    <!-- ============================================
+         PANTALLA DE ENTRADA (NUEVA)
+         ============================================ -->
+    <div class="entry-screen" id="entry-screen">
+        <div class="entry-content">
+            <div class="entry-icon">
+                <svg viewBox="0 0 100 100" fill="none">
+                    <ellipse cx="50" cy="85" rx="25" ry="8" fill="#81b29a" opacity="0.4" />
+                    <path d="M50 85 L50 55" stroke="#81b29a" stroke-width="4" stroke-linecap="round" />
+                    <ellipse cx="35" cy="70" rx="15" ry="8" fill="#81b29a" transform="rotate(-30 35 70)" />
+                    <ellipse cx="65" cy="70" rx="15" ry="8" fill="#81b29a" transform="rotate(30 65 70)" />
+                    <circle cx="50" cy="35" r="20" fill="#e07a5f" />
+                    <circle cx="50" cy="35" r="12" fill="#c45a3f" />
+                    <circle cx="38" cy="28" r="8" fill="#e8a0a0" opacity="0.6" />
+                </svg>
+            </div>
+            <h2 class="entry-title">Para Mamá con Amor</h2>
+            <p class="entry-subtitle">Un mensaje especial te espera</p>
+            <button class="entry-button" id="entry-button">
+                <span>Haz clic para comenzar</span>
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                    <polygon points="5 3 19 12 5 21 5 3" />
+                </svg>
+            </button>
+        </div>
+    </div>
 
     <!-- ============================================
          PANTALLA DE BIENVENIDA
@@ -1366,9 +1531,6 @@
     </div>
 
     <!-- Audios -->
-    <audio id="pop-sound" preload="auto">
-        <source src="pop.mp3" type="audio/mpeg">
-    </audio>
     <audio id="bg-music" loop preload="auto">
         <source src="madre.mp3" type="audio/mpeg">
     </audio>
@@ -1377,6 +1539,8 @@
         // ============================================
         // VARIABLES
         // ============================================
+        let entryScreen = null;
+        let entryButton = null;
         let welcomeScreen = null;
         let welcomeInput = null;
         let welcomeButton = null;
@@ -1771,6 +1935,8 @@
         // DOM READY
         // ============================================
         document.addEventListener('DOMContentLoaded', function () {
+            entryScreen = document.getElementById('entry-screen');
+            entryButton = document.getElementById('entry-button');
             welcomeScreen = document.getElementById('welcome-screen');
             welcomeInput = document.getElementById('user-name');
             welcomeButton = document.getElementById('welcome-button');
@@ -1821,6 +1987,24 @@
         // EVENTOS
         // ============================================
         function setupEvents() {
+            // Pantalla de entrada (NUEVA)
+            if (entryButton) {
+                entryButton.addEventListener('click', function () {
+                    // Ocultar pantalla de entrada
+                    if (entryScreen) {
+                        entryScreen.classList.add('hidden');
+                    }
+
+                    // Reproducir música al hacer clic
+                    if (bgMusic) {
+                        bgMusic.volume = 0.3;
+                        bgMusic.play().catch(function () {
+                            console.log('No se pudo reproducir la música');
+                        });
+                    }
+                });
+            }
+
             // Pantalla de bienvenida
             if (welcomeButton) {
                 welcomeButton.addEventListener('click', submitName);
@@ -1962,7 +2146,6 @@
             isOpen = true;
 
             playSound(popSound, 0.5);
-            playSound(bgMusic, 0.25);
 
             // Crear explosión de partículas
             createBurstParticles();
@@ -2182,6 +2365,11 @@
         `;
         document.head.appendChild(styleSheet);
     </script>
+
+    <footer class="footer">
+        <p>Hecho con <span class="heart">amor</span> por Dai Nicks © 2026/p>
+    </footer>
+
 </body>
 
 </html>
