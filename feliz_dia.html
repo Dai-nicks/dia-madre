@@ -1,0 +1,2187 @@
+<!DOCTYPE html>
+<html lang="es">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Para Mamá con Amor</title>
+    <!-- FAVICON - Cambia esta URL por tu imagen -->
+    <link rel="icon" type="image/png" href="https://i.imgur.com/cOoE28W.png">
+    <!-- También puedes usar .ico: <link rel="icon" type="image/x-icon" href="tu-icono.ico"> -->
+
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link
+        href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,600;1,400&family=Great+Vibes&family=Playfair+Display:ital,wght@0,400;0,700;1,400&display=swap"
+        rel="stylesheet">
+
+    <style>
+        :root {
+            --bg-peach-light: #fff8f3;
+            --bg-peach: #ffe8d6;
+            --bg-peach-deep: #e8c9a0;
+            --accent-coral: #e07a5f;
+            --accent-coral-dark: #c45a3f;
+            --accent-sage: #81b29a;
+            --accent-sage-dark: #5a8a6e;
+            --cream: #fefae0;
+            --cream-dark: #f0e6c8;
+            --gold: #d4a574;
+            --gold-light: #e8c9a0;
+            --text-dark: #5a4a3a;
+            --rose: #d4a5a5;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        html {
+            scroll-behavior: smooth;
+        }
+
+        body {
+            font-family: 'Cormorant Garamond', serif;
+            background: var(--bg-peach-light);
+            min-height: 100vh;
+            overflow-x: hidden;
+            color: var(--text-dark);
+        }
+
+        /* Pétalos flotantes */
+        .floating-petals-container {
+            position: fixed;
+            inset: 0;
+            pointer-events: none;
+            z-index: 2;
+            overflow: hidden;
+        }
+
+        .floating-petal {
+            position: absolute;
+            bottom: -60px;
+            animation: floatPetal linear infinite;
+            will-change: transform;
+        }
+
+        @keyframes floatPetal {
+            0% {
+                transform: translateY(0) rotate(0deg) scale(0.6);
+                opacity: 0;
+            }
+
+            5% {
+                opacity: 0.8;
+            }
+
+            95% {
+                opacity: 0.8;
+            }
+
+            100% {
+                transform: translateY(-115vh) rotate(280deg) scale(1) translateX(60px);
+                opacity: 0;
+            }
+        }
+
+        /* Patron floral */
+        .floral-pattern {
+            position: fixed;
+            inset: 0;
+            opacity: 0.03;
+            background-image: url("data:image/svg+xml,%3Csvg width='120' height='120' viewBox='0 0 120 120' xmlns='http://www.w3.org/2000/svg'%3E%3Ccircle cx='60' cy='30' r='12' fill='%23e07a5f' fill-opacity='0.4'/%3E%3Ccircle cx='42' cy='48' r='8' fill='%23d4a5a5' fill-opacity='0.3'/%3E%3Ccircle cx='78' cy='48' r='8' fill='%23d4a5a5' fill-opacity='0.3'/%3E%3Cellipse cx='60' cy='70' rx='4' ry='18' fill='%2381b29a' fill-opacity='0.35'/%3E%3Cellipse cx='48' cy='90' rx='10' ry='6' fill='%2381b29a' fill-opacity='0.25' transform='rotate(-30 48 90)'/%3E%3Cellipse cx='72' cy='90' rx='10' ry='6' fill='%2381b29a' fill-opacity='0.25' transform='rotate(30 72 90)'/%3E%3C/svg%3E");
+            pointer-events: none;
+            z-index: 1;
+        }
+
+        /* Canvas confeti */
+        #confetti-canvas {
+            position: fixed;
+            inset: 0;
+            pointer-events: none;
+            z-index: 200;
+        }
+
+        /* ============================================
+           PANTALLA DE BIENVENIDA
+           ============================================ */
+        .welcome-screen {
+            position: fixed;
+            inset: 0;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            padding: 1.5rem;
+            z-index: 500;
+            background: linear-gradient(180deg,
+                    var(--bg-peach-light) 0%,
+                    var(--bg-peach) 30%,
+                    var(--bg-peach-deep) 70%,
+                    #d4b896 100%);
+            transition: opacity 0.6s ease, transform 0.6s ease;
+        }
+
+        .welcome-screen::before {
+            content: '';
+            position: absolute;
+            inset: 0;
+            background-image:
+                radial-gradient(ellipse at 20% 20%, rgba(224, 122, 95, 0.12) 0%, transparent 50%),
+                radial-gradient(ellipse at 80% 80%, rgba(129, 178, 154, 0.12) 0%, transparent 50%);
+            pointer-events: none;
+        }
+
+        .welcome-screen.hidden {
+            opacity: 0;
+            pointer-events: none;
+            transform: scale(1.05);
+        }
+
+        .welcome-icon {
+            width: 110px;
+            height: 110px;
+            margin-bottom: 1.5rem;
+            animation: gentlePulse 3s ease-in-out infinite;
+            position: relative;
+            z-index: 10;
+        }
+
+        @keyframes gentlePulse {
+
+            0%,
+            100% {
+                transform: scale(1) rotate(0deg);
+            }
+
+            50% {
+                transform: scale(1.08) rotate(5deg);
+            }
+        }
+
+        .welcome-title {
+            font-family: 'Great Vibes', cursive;
+            font-size: clamp(2.8rem, 9vw, 4.5rem);
+            color: var(--accent-coral);
+            text-shadow: 2px 2px 8px rgba(224, 122, 95, 0.2);
+            margin-bottom: 0.5rem;
+            position: relative;
+            z-index: 10;
+            text-align: center;
+            line-height: 1.2;
+        }
+
+        .welcome-subtitle {
+            font-family: 'Playfair Display', serif;
+            font-size: clamp(1rem, 2.5vw, 1.3rem);
+            color: var(--accent-coral-dark);
+            font-style: italic;
+            margin-bottom: 2.5rem;
+            opacity: 0.85;
+            letter-spacing: 1px;
+            position: relative;
+            z-index: 10;
+            text-align: center;
+        }
+
+        .welcome-card {
+            background: linear-gradient(145deg, var(--cream) 0%, #faf3e0 100%);
+            padding: 2.2rem 1.8rem;
+            border-radius: 20px;
+            box-shadow:
+                0 25px 60px rgba(90, 74, 58, 0.2),
+                0 8px 20px rgba(90, 74, 58, 0.1);
+            width: min(420px, 90vw);
+            position: relative;
+            z-index: 10;
+            border: 2px solid rgba(224, 122, 95, 0.15);
+        }
+
+        .welcome-card::before {
+            content: '';
+            position: absolute;
+            top: -12px;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 80px;
+            height: 24px;
+            background: linear-gradient(135deg, var(--accent-coral) 0%, var(--accent-coral-dark) 100%);
+            border-radius: 12px;
+            box-shadow: 0 4px 12px rgba(224, 122, 95, 0.3);
+        }
+
+        .welcome-label {
+            display: block;
+            margin-bottom: 0.8rem;
+            color: var(--text-dark);
+            font-size: 1.05rem;
+            font-style: italic;
+            text-align: center;
+        }
+
+        .welcome-input {
+            width: 100%;
+            padding: 1rem 1.3rem;
+            font-size: 1.1rem;
+            font-family: 'Playfair Display', serif;
+            font-style: italic;
+            border: 2px solid var(--bg-peach-deep);
+            border-radius: 14px;
+            outline: none;
+            transition: all 0.3s ease;
+            text-align: center;
+            background: rgba(255, 255, 255, 0.7);
+            -webkit-appearance: none;
+            appearance: none;
+        }
+
+        .welcome-input:focus {
+            border-color: var(--accent-coral);
+            box-shadow: 0 0 0 4px rgba(224, 122, 95, 0.15);
+            background: white;
+        }
+
+        .welcome-input::placeholder {
+            color: #c4a0a0;
+        }
+
+        .welcome-button {
+            width: 100%;
+            padding: 1rem 1.5rem;
+            margin-top: 1.3rem;
+            font-family: 'Great Vibes', cursive;
+            font-size: 1.7rem;
+            color: white;
+            background: linear-gradient(135deg, var(--accent-coral) 0%, var(--accent-coral-dark) 100%);
+            border: none;
+            border-radius: 14px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            box-shadow: 0 6px 22px rgba(224, 122, 95, 0.35);
+            position: relative;
+            overflow: hidden;
+            -webkit-tap-highlight-color: transparent;
+        }
+
+        .welcome-button::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.2), transparent);
+            transition: left 0.5s ease;
+        }
+
+        .welcome-button:hover::before {
+            left: 100%;
+        }
+
+        .welcome-button:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 10px 30px rgba(224, 122, 95, 0.45);
+        }
+
+        .welcome-button:active {
+            transform: translateY(-1px);
+        }
+
+        .welcome-error {
+            color: var(--accent-coral);
+            font-size: 0.9rem;
+            margin-top: 1rem;
+            text-align: center;
+            opacity: 0;
+            transform: translateY(-5px);
+            transition: all 0.3s ease;
+            font-style: italic;
+        }
+
+        .welcome-error.visible {
+            opacity: 1;
+            transform: translateY(0);
+        }
+
+        /* ============================================
+           PAGINA PRINCIPAL
+           ============================================ */
+        .main-page {
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            padding: 1.5rem;
+            position: relative;
+            background: linear-gradient(180deg,
+                    var(--bg-peach-light) 0%,
+                    var(--bg-peach) 25%,
+                    var(--bg-peach-deep) 60%,
+                    #d4b896 100%);
+        }
+
+        .main-page::before {
+            content: '';
+            position: absolute;
+            inset: 0;
+            background-image:
+                radial-gradient(ellipse at 15% 25%, rgba(224, 122, 95, 0.1) 0%, transparent 50%),
+                radial-gradient(ellipse at 85% 75%, rgba(129, 178, 154, 0.12) 0%, transparent 50%),
+                radial-gradient(ellipse at 50% 50%, rgba(255, 255, 255, 0.3) 0%, transparent 70%);
+            pointer-events: none;
+        }
+
+        .main-title {
+            font-family: 'Great Vibes', cursive;
+            font-size: clamp(2.5rem, 9vw, 5rem);
+            color: var(--accent-coral);
+            text-shadow: 2px 2px 8px rgba(224, 122, 95, 0.2);
+            margin-bottom: 0.5rem;
+            position: relative;
+            z-index: 10;
+            animation: titleIn 1s ease-out;
+            text-align: center;
+            line-height: 1.2;
+        }
+
+        @keyframes titleIn {
+            from {
+                opacity: 0;
+                transform: translateY(-30px);
+            }
+
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .subtitle {
+            font-family: 'Playfair Display', serif;
+            font-size: clamp(0.95rem, 2.5vw, 1.3rem);
+            color: var(--accent-coral-dark);
+            font-style: italic;
+            margin-bottom: 2rem;
+            opacity: 0.85;
+            letter-spacing: 1.5px;
+            position: relative;
+            z-index: 10;
+            text-align: center;
+            line-height: 1.6;
+        }
+
+        /* RAMO DE FLORES */
+        .bouquet-wrapper {
+            position: relative;
+            z-index: 10;
+            perspective: 1200px;
+        }
+
+        .bouquet {
+            position: relative;
+            width: clamp(300px, 85vw, 450px);
+            height: clamp(380px, 80vw, 550px);
+            transform-style: preserve-3d;
+            cursor: pointer;
+            transition: transform 0.5s ease;
+        }
+
+        .bouquet:hover {
+            transform: scale(1.03);
+        }
+
+        .bouquet.opening {
+            z-index: 150;
+        }
+
+        /* Jarrón */
+        .vase {
+            position: absolute;
+            bottom: 0;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 55%;
+            height: 40%;
+        }
+
+        .vase-body {
+            position: absolute;
+            inset: 0;
+            background: linear-gradient(155deg,
+                    #f5e6d3 0%,
+                    #e8d5b8 30%,
+                    #d4c4a8 60%,
+                    #c4b498 100%);
+            border-radius: 15% 15% 45% 45% / 10% 10% 30% 30%;
+            box-shadow:
+                0 20px 50px rgba(90, 74, 58, 0.25),
+                inset 0 4px 20px rgba(255, 255, 255, 0.4),
+                inset -10px 0 30px rgba(0, 0, 0, 0.05);
+        }
+
+        .vase-pattern {
+            position: absolute;
+            inset: 15%;
+            border: 1px solid rgba(224, 122, 95, 0.2);
+            border-radius: 10% 10% 35% 35% / 8% 8% 25% 25%;
+            pointer-events: none;
+        }
+
+        .vase-rim {
+            position: absolute;
+            top: -8px;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 60%;
+            height: 16px;
+            background: linear-gradient(180deg, #faf3e0 0%, #e8d5b8 100%);
+            border-radius: 50%;
+            box-shadow: 0 4px 12px rgba(90, 74, 58, 0.15);
+        }
+
+        /* Flores individuales */
+        .flowers-container {
+            position: absolute;
+            bottom: 35%;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 90%;
+            height: 75%;
+        }
+
+        .flower {
+            position: absolute;
+            transform-origin: bottom center;
+            transition: all 0.8s cubic-bezier(0.34, 1.56, 0.64, 1);
+        }
+
+        .flower-1 {
+            left: 50%;
+            bottom: 0;
+            transform: translateX(-50%);
+            z-index: 10;
+        }
+
+        .flower-2 {
+            left: 25%;
+            bottom: 5%;
+            transform: rotate(-15deg);
+            z-index: 8;
+        }
+
+        .flower-3 {
+            left: 75%;
+            bottom: 5%;
+            transform: rotate(15deg);
+            z-index: 8;
+        }
+
+        .flower-4 {
+            left: 35%;
+            bottom: 10%;
+            transform: rotate(-8deg);
+            z-index: 6;
+        }
+
+        .flower-5 {
+            left: 65%;
+            bottom: 10%;
+            transform: rotate(8deg);
+            z-index: 6;
+        }
+
+        .flower-6 {
+            left: 15%;
+            bottom: 15%;
+            transform: rotate(-25deg) scale(0.85);
+            z-index: 4;
+        }
+
+        .flower-7 {
+            left: 85%;
+            bottom: 15%;
+            transform: rotate(25deg) scale(0.85);
+            z-index: 4;
+        }
+
+        .flower-stem {
+            position: absolute;
+            bottom: 0;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 4px;
+            background: linear-gradient(180deg, var(--accent-sage) 0%, var(--accent-sage-dark) 100%);
+            border-radius: 2px;
+        }
+
+        .flower-head {
+            position: absolute;
+            top: 0;
+            left: 50%;
+            transform: translateX(-50%);
+        }
+
+        /* Tulipán */
+        .tulip .flower-stem {
+            height: 140px;
+        }
+
+        .tulip .flower-head {
+            width: 45px;
+            height: 50px;
+            top: -45px;
+        }
+
+        .tulip-petal {
+            position: absolute;
+            bottom: 0;
+            width: 18px;
+            height: 40px;
+            border-radius: 50% 50% 20% 20%;
+            transform-origin: bottom center;
+        }
+
+        .tulip-petal:nth-child(1) {
+            left: 0;
+            transform: rotate(-15deg);
+        }
+
+        .tulip-petal:nth-child(2) {
+            left: 50%;
+            transform: translateX(-50%);
+        }
+
+        .tulip-petal:nth-child(3) {
+            right: 0;
+            transform: rotate(15deg);
+        }
+
+        .tulip.coral .tulip-petal {
+            background: linear-gradient(180deg, #e07a5f 0%, #c45a3f 100%);
+        }
+
+        .tulip.pink .tulip-petal {
+            background: linear-gradient(180deg, #d4a5a5 0%, #c49090 100%);
+        }
+
+        .tulip.peach .tulip-petal {
+            background: linear-gradient(180deg, #f0b8a0 0%, #e0a080 100%);
+        }
+
+        .tulip-leaf {
+            position: absolute;
+            bottom: 30px;
+            width: 25px;
+            height: 45px;
+            background: var(--accent-sage);
+            border-radius: 50% 50% 50% 50%;
+        }
+
+        .tulip-leaf.left {
+            left: -18px;
+            transform: rotate(-30deg);
+        }
+
+        .tulip-leaf.right {
+            right: -18px;
+            transform: rotate(30deg);
+        }
+
+        /* Rosa */
+        .rose .flower-stem {
+            height: 130px;
+        }
+
+        .rose .flower-head {
+            width: 50px;
+            height: 50px;
+            top: -40px;
+        }
+
+        .rose-center {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            width: 20px;
+            height: 20px;
+            background: linear-gradient(135deg, #c45a3f 0%, #a04030 100%);
+            border-radius: 50%;
+        }
+
+        .rose-petal {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            width: 22px;
+            height: 28px;
+            background: linear-gradient(180deg, #e07a5f 0%, #d06a4f 100%);
+            border-radius: 50%;
+            transform-origin: bottom center;
+        }
+
+        .rose-petal:nth-child(2) {
+            transform: translate(-50%, -50%) rotate(60deg);
+        }
+
+        .rose-petal:nth-child(3) {
+            transform: translate(-50%, -50%) rotate(120deg);
+        }
+
+        .rose-petal:nth-child(4) {
+            transform: translate(-50%, -50%) rotate(180deg);
+        }
+
+        .rose-petal:nth-child(5) {
+            transform: translate(-50%, -50%) rotate(240deg);
+        }
+
+        .rose-petal:nth-child(6) {
+            transform: translate(-50%, -50%) rotate(300deg);
+        }
+
+        .rose.pink .rose-center {
+            background: linear-gradient(135deg, #c49090 0%, #a07070 100%);
+        }
+
+        .rose.pink .rose-petal {
+            background: linear-gradient(180deg, #d4a5a5 0%, #c49595 100%);
+        }
+
+        /* Margarita */
+        .daisy .flower-stem {
+            height: 135px;
+        }
+
+        .daisy .flower-head {
+            width: 55px;
+            height: 55px;
+            top: -42px;
+        }
+
+        .daisy-center {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            width: 18px;
+            height: 18px;
+            background: linear-gradient(135deg, #f0d060 0%, #e0b840 100%);
+            border-radius: 50%;
+            z-index: 2;
+        }
+
+        .daisy-petal {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            width: 10px;
+            height: 22px;
+            background: linear-gradient(180deg, #fff 0%, #f8f0e8 100%);
+            border-radius: 50%;
+            transform-origin: center bottom;
+            box-shadow: 0 0 3px rgba(0, 0, 0, 0.1);
+        }
+
+        /* Peonía */
+        .peony .flower-stem {
+            height: 125px;
+        }
+
+        .peony .flower-head {
+            width: 60px;
+            height: 55px;
+            top: -38px;
+        }
+
+        .peony-petal {
+            position: absolute;
+            border-radius: 50%;
+            background: linear-gradient(135deg, #f8c8d0 0%, #e8b0b8 100%);
+        }
+
+        .peony-petal:nth-child(1) {
+            width: 25px;
+            height: 28px;
+            top: 5px;
+            left: 5px;
+        }
+
+        .peony-petal:nth-child(2) {
+            width: 22px;
+            height: 25px;
+            top: 8px;
+            left: 22px;
+        }
+
+        .peony-petal:nth-child(3) {
+            width: 20px;
+            height: 22px;
+            top: 18px;
+            left: 10px;
+        }
+
+        .peony-petal:nth-child(4) {
+            width: 24px;
+            height: 26px;
+            top: 15px;
+            left: 25px;
+        }
+
+        .peony-petal:nth-child(5) {
+            width: 18px;
+            height: 20px;
+            top: 25px;
+            left: 20px;
+            background: linear-gradient(135deg, #f0b8c0 0%, #e0a0a8 100%);
+        }
+
+        /* Botón central */
+        .bouquet-button {
+            position: absolute;
+            top: 45%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            width: 90px;
+            height: 90px;
+            border-radius: 50%;
+            background: linear-gradient(135deg, var(--accent-coral) 0%, var(--accent-coral-dark) 100%);
+            border: none;
+            cursor: pointer;
+            z-index: 30;
+            box-shadow:
+                0 8px 30px rgba(224, 122, 95, 0.4),
+                inset 0 2px 10px rgba(255, 255, 255, 0.3);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: all 0.4s cubic-bezier(0.34, 1.56, 0.64, 1);
+            animation: buttonGlow 2s ease-in-out infinite;
+            -webkit-tap-highlight-color: transparent;
+        }
+
+        @keyframes buttonGlow {
+
+            0%,
+            100% {
+                box-shadow: 0 8px 30px rgba(224, 122, 95, 0.4), inset 0 2px 10px rgba(255, 255, 255, 0.3);
+            }
+
+            50% {
+                box-shadow: 0 8px 40px rgba(224, 122, 95, 0.6), inset 0 2px 15px rgba(255, 255, 255, 0.4), 0 0 20px rgba(224, 122, 95, 0.3);
+            }
+        }
+
+        .bouquet-button:hover {
+            transform: translate(-50%, -50%) scale(1.15);
+            box-shadow: 0 12px 40px rgba(224, 122, 95, 0.5);
+        }
+
+        .bouquet-button:active {
+            transform: translate(-50%, -50%) scale(0.95);
+        }
+
+        .bouquet-button.hidden {
+            animation: buttonExplode 0.5s ease-out forwards;
+            pointer-events: none;
+        }
+
+        @keyframes buttonExplode {
+            0% {
+                transform: translate(-50%, -50%) scale(1);
+                opacity: 1;
+            }
+
+            50% {
+                transform: translate(-50%, -50%) scale(1.5);
+                opacity: 0.8;
+            }
+
+            100% {
+                transform: translate(-50%, -50%) scale(0);
+                opacity: 0;
+            }
+        }
+
+        .button-icon {
+            width: 40px;
+            height: 40px;
+        }
+
+        /* Animación de flores abriéndose */
+        .bouquet.opening .flower {
+            animation: flowerBloom 1s ease-out forwards;
+        }
+
+        .bouquet.opening .flower-1 {
+            animation-delay: 0.1s;
+        }
+
+        .bouquet.opening .flower-2 {
+            animation-delay: 0.15s;
+        }
+
+        .bouquet.opening .flower-3 {
+            animation-delay: 0.15s;
+        }
+
+        .bouquet.opening .flower-4 {
+            animation-delay: 0.2s;
+        }
+
+        .bouquet.opening .flower-5 {
+            animation-delay: 0.2s;
+        }
+
+        .bouquet.opening .flower-6 {
+            animation-delay: 0.25s;
+        }
+
+        .bouquet.opening .flower-7 {
+            animation-delay: 0.25s;
+        }
+
+        @keyframes flowerBloom {
+            0% {
+                transform: translateY(0) scale(1);
+            }
+
+            50% {
+                transform: translateY(-20px) scale(1.1);
+            }
+
+            100% {
+                transform: translateY(-30px) scale(1.05);
+            }
+        }
+
+        /* CARTA EMERGENTE */
+        .letter-emerging {
+            position: fixed;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%) scale(0.1);
+            width: min(92vw, 600px);
+            max-height: 90vh;
+            background: linear-gradient(145deg, #fefae0 0%, #f5e6d3 30%, #ede0cc 70%, #e8d5b8 100%);
+            border-radius: 8px;
+            padding: 2.5rem 2rem;
+            box-shadow:
+                0 30px 80px rgba(90, 74, 58, 0.35),
+                0 15px 35px rgba(90, 74, 58, 0.2),
+                inset 0 0 80px rgba(139, 90, 43, 0.05);
+            z-index: 300;
+            opacity: 0;
+            pointer-events: none;
+            overflow-y: auto;
+            transform-origin: center center;
+            -webkit-overflow-scrolling: touch;
+        }
+
+        .letter-emerging.visible {
+            opacity: 1;
+            pointer-events: auto;
+            animation: emergeFromBouquet 1.2s cubic-bezier(0.34, 1.2, 0.64, 1) forwards;
+        }
+
+        @keyframes emergeFromBouquet {
+            0% {
+                transform: translate(-50%, -50%) scale(0.08);
+                opacity: 0;
+            }
+
+            30% {
+                opacity: 1;
+            }
+
+            60% {
+                transform: translate(-50%, -50%) scale(0.85);
+            }
+
+            80% {
+                transform: translate(-50%, -50%) scale(1.02);
+            }
+
+            100% {
+                transform: translate(-50%, -50%) scale(1);
+                opacity: 1;
+            }
+        }
+
+        /* OVERLAY */
+        .letter-overlay {
+            position: fixed;
+            inset: 0;
+            background: rgba(80, 60, 50, 0.55);
+            backdrop-filter: blur(8px);
+            -webkit-backdrop-filter: blur(8px);
+            z-index: 250;
+            opacity: 0;
+            pointer-events: none;
+            transition: opacity 0.6s ease;
+        }
+
+        .letter-overlay.visible {
+            opacity: 1;
+            pointer-events: auto;
+        }
+
+        /* CONTENIDO CARTA */
+        .letter-content {
+            position: relative;
+            z-index: 1;
+            text-align: center;
+        }
+
+        .letter-header {
+            margin-bottom: 1.8rem;
+        }
+
+        .letter-date {
+            font-family: 'Playfair Display', serif;
+            font-size: 0.88rem;
+            color: var(--accent-coral-dark);
+            font-style: italic;
+            letter-spacing: 1.2px;
+            margin-bottom: 0.8rem;
+        }
+
+        .letter-greeting {
+            font-family: 'Great Vibes', cursive;
+            font-size: clamp(2.2rem, 7vw, 3.5rem);
+            color: var(--accent-coral);
+            line-height: 1.2;
+            text-shadow: 2px 2px 4px rgba(224, 122, 95, 0.12);
+        }
+
+        .floral-divider {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 0.8rem;
+            margin: 1.8rem 0;
+        }
+
+        .floral-divider svg {
+            width: 36px;
+            height: 36px;
+        }
+
+        .floral-divider .line {
+            width: 70px;
+            height: 1px;
+            background: linear-gradient(90deg, transparent, var(--gold), transparent);
+        }
+
+        .letter-body {
+            font-family: 'Cormorant Garamond', serif;
+            font-size: clamp(1.05rem, 2.8vw, 1.3rem);
+            color: var(--text-dark);
+            line-height: 1.9;
+            margin-bottom: 1.8rem;
+            text-align: left;
+            padding: 0 0.8rem;
+        }
+
+        .letter-body p {
+            margin-bottom: 1.3rem;
+            text-indent: 1.8rem;
+        }
+
+        .letter-body .highlight {
+            color: var(--accent-coral);
+            font-style: italic;
+            font-weight: 600;
+        }
+
+        .letter-flowers {
+            display: flex;
+            justify-content: center;
+            gap: 1.5rem;
+            margin: 1.8rem 0;
+        }
+
+        .letter-flower {
+            width: 60px;
+            height: 60px;
+        }
+
+        .letter-signature {
+            margin-top: 2.2rem;
+        }
+
+        .letter-signature p {
+            font-family: 'Great Vibes', cursive;
+            color: var(--accent-coral-dark);
+        }
+
+        .letter-signature .closing {
+            font-size: clamp(1.2rem, 3.5vw, 1.6rem);
+            margin-bottom: 0.4rem;
+        }
+
+        .letter-signature .name {
+            font-size: clamp(1.6rem, 4.5vw, 2.3rem);
+        }
+
+        /* BOTON CERRAR */
+        .close-button {
+            position: absolute;
+            top: 12px;
+            right: 12px;
+            width: 34px;
+            height: 34px;
+            border-radius: 50%;
+            background: var(--cream);
+            border: 2px solid var(--gold);
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            z-index: 20;
+            transition: all 0.25s ease;
+            opacity: 0.85;
+            -webkit-tap-highlight-color: transparent;
+        }
+
+        .close-button:hover {
+            background: var(--accent-coral);
+            border-color: var(--accent-coral);
+            transform: scale(1.1);
+            opacity: 1;
+        }
+
+        .close-button:hover svg {
+            stroke: white;
+        }
+
+        .close-button svg {
+            width: 16px;
+            height: 16px;
+            stroke: var(--text-dark);
+            stroke-width: 2;
+        }
+
+        /* RESPONSIVE */
+        @media (max-width: 480px) {
+            .bouquet {
+                width: 280px;
+                height: 360px;
+            }
+
+            .bouquet-button {
+                width: 70px;
+                height: 70px;
+            }
+
+            .button-icon {
+                width: 30px;
+                height: 30px;
+            }
+
+            .letter-emerging {
+                width: 95vw;
+                padding: 2rem 1.4rem;
+                max-height: 88vh;
+            }
+
+            .letter-flower {
+                width: 50px;
+                height: 50px;
+            }
+
+            .welcome-icon {
+                width: 85px;
+                height: 85px;
+            }
+
+            .welcome-card {
+                padding: 1.8rem 1.2rem;
+            }
+
+            .close-button {
+                width: 30px;
+                height: 30px;
+                top: 10px;
+                right: 10px;
+            }
+
+            .close-button svg {
+                width: 14px;
+                height: 14px;
+            }
+        }
+
+        @media (prefers-reduced-motion: reduce) {
+
+            *,
+            *::before,
+            *::after {
+                animation-duration: 0.01ms !important;
+                animation-iteration-count: 1 !important;
+                transition-duration: 0.01ms !important;
+            }
+
+            .floating-petal {
+                display: none;
+            }
+        }
+    </style>
+</head>
+
+<body>
+    <!-- Patron floral -->
+    <div class="floral-pattern"></div>
+
+    <!-- Pétalos flotantes -->
+    <div class="floating-petals-container" id="floating-petals"></div>
+
+    <!-- Canvas confeti -->
+    <canvas id="confetti-canvas"></canvas>
+
+    <!-- Overlay para carta -->
+    <div class="letter-overlay" id="letter-overlay"></div>
+
+    <!-- ============================================
+         PANTALLA DE BIENVENIDA
+         ============================================ -->
+    <div class="welcome-screen" id="welcome-screen">
+        <div class="welcome-icon">
+            <svg viewBox="0 0 100 100" fill="none">
+                <ellipse cx="50" cy="85" rx="25" ry="8" fill="#81b29a" opacity="0.4" />
+                <path d="M50 85 L50 55" stroke="#81b29a" stroke-width="4" stroke-linecap="round" />
+                <ellipse cx="35" cy="70" rx="15" ry="8" fill="#81b29a" transform="rotate(-30 35 70)" />
+                <ellipse cx="65" cy="70" rx="15" ry="8" fill="#81b29a" transform="rotate(30 65 70)" />
+                <circle cx="50" cy="35" r="20" fill="#e07a5f" />
+                <circle cx="50" cy="35" r="12" fill="#c45a3f" />
+                <circle cx="38" cy="28" r="8" fill="#e8a0a0" opacity="0.6" />
+            </svg>
+        </div>
+
+        <h1 class="welcome-title">Feliz Dia de las Madres</h1>
+        <p class="welcome-subtitle">Un mensaje especial espera por ti...</p>
+
+        <div class="welcome-card">
+            <label class="welcome-label" for="user-name">Escribe tu nombre para descubrir tu sorpresa:</label>
+            <input type="text" id="user-name" class="welcome-input" placeholder="Tu nombre aqui..." autocomplete="off">
+            <button class="welcome-button" id="welcome-button">Ver mi sorpresa</button>
+            <p class="welcome-error" id="welcome-error">Por favor, escribe tu nombre para continuar.</p>
+        </div>
+    </div>
+
+    <!-- ============================================
+         PAGINA PRINCIPAL - RAMO DE FLORES
+         ============================================ -->
+    <main class="main-page" id="main-page" style="display: none;">
+        <h1 class="main-title">Holi, <span id="display-name"></span></h1>
+        <p class="subtitle">Tengo algo muy especial para ti...<br>Haz clic en el corazon para descubrirlo</p>
+
+        <div class="bouquet-wrapper">
+            <div class="bouquet" id="bouquet">
+                <!-- Jarrón -->
+                <div class="vase">
+                    <div class="vase-body">
+                        <div class="vase-pattern"></div>
+                    </div>
+                    <div class="vase-rim"></div>
+                </div>
+
+                <!-- Flores -->
+                <div class="flowers-container">
+                    <!-- Flor central - Rosa -->
+                    <div class="flower flower-1 rose">
+                        <div class="flower-stem">
+                            <div class="tulip-leaf left"></div>
+                            <div class="tulip-leaf right"></div>
+                        </div>
+                        <div class="flower-head">
+                            <div class="rose-petal"></div>
+                            <div class="rose-petal"></div>
+                            <div class="rose-petal"></div>
+                            <div class="rose-petal"></div>
+                            <div class="rose-petal"></div>
+                            <div class="rose-petal"></div>
+                            <div class="rose-center"></div>
+                        </div>
+                    </div>
+
+                    <!-- Tulipanes -->
+                    <div class="flower flower-2 tulip coral">
+                        <div class="flower-stem">
+                            <div class="tulip-leaf left"></div>
+                        </div>
+                        <div class="flower-head">
+                            <div class="tulip-petal"></div>
+                            <div class="tulip-petal"></div>
+                            <div class="tulip-petal"></div>
+                        </div>
+                    </div>
+
+                    <div class="flower flower-3 tulip pink">
+                        <div class="flower-stem">
+                            <div class="tulip-leaf right"></div>
+                        </div>
+                        <div class="flower-head">
+                            <div class="tulip-petal"></div>
+                            <div class="tulip-petal"></div>
+                            <div class="tulip-petal"></div>
+                        </div>
+                    </div>
+
+                    <!-- Margaritas -->
+                    <div class="flower flower-4 daisy">
+                        <div class="flower-stem">
+                            <div class="tulip-leaf left"></div>
+                        </div>
+                        <div class="flower-head" id="daisy-head-1">
+                            <div class="daisy-center"></div>
+                        </div>
+                    </div>
+
+                    <div class="flower flower-5 tulip peach">
+                        <div class="flower-stem">
+                            <div class="tulip-leaf right"></div>
+                        </div>
+                        <div class="flower-head">
+                            <div class="tulip-petal"></div>
+                            <div class="tulip-petal"></div>
+                            <div class="tulip-petal"></div>
+                        </div>
+                    </div>
+
+                    <!-- Peonías -->
+                    <div class="flower flower-6 peony">
+                        <div class="flower-stem">
+                            <div class="tulip-leaf left"></div>
+                        </div>
+                        <div class="flower-head">
+                            <div class="peony-petal"></div>
+                            <div class="peony-petal"></div>
+                            <div class="peony-petal"></div>
+                            <div class="peony-petal"></div>
+                            <div class="peony-petal"></div>
+                        </div>
+                    </div>
+
+                    <div class="flower flower-7 rose pink">
+                        <div class="flower-stem">
+                            <div class="tulip-leaf right"></div>
+                        </div>
+                        <div class="flower-head">
+                            <div class="rose-petal"></div>
+                            <div class="rose-petal"></div>
+                            <div class="rose-petal"></div>
+                            <div class="rose-petal"></div>
+                            <div class="rose-petal"></div>
+                            <div class="rose-petal"></div>
+                            <div class="rose-center"></div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Botón central -->
+                <button class="bouquet-button" id="bouquet-button" aria-label="Abrir mensaje">
+                    <svg class="button-icon" viewBox="0 0 24 24" fill="white">
+                        <path
+                            d="M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z" />
+                    </svg>
+                </button>
+            </div>
+        </div>
+    </main>
+
+    <!-- ============================================
+         CARTA EMERGENTE
+         ============================================ -->
+    <div class="letter-emerging" id="letter-emerging">
+        <button class="close-button" id="close-button" aria-label="Cerrar carta">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor">
+                <path d="M18 6L6 18M6 6l12 12" />
+            </svg>
+        </button>
+
+        <div class="letter-content">
+            <div class="letter-header">
+                <p class="letter-date">Feliz Dia de las Madres</p>
+                <h2 class="letter-greeting">Para <span id="letter-name"></span> madre hermosa</h2>
+            </div>
+
+            <div class="floral-divider">
+                <span class="line"></span>
+                <svg viewBox="0 0 50 50">
+                    <circle cx="25" cy="14" r="7" fill="#e07a5f" />
+                    <circle cx="16" cy="20" r="4.5" fill="#d4a5a5" />
+                    <circle cx="34" cy="20" r="4.5" fill="#d4a5a5" />
+                    <ellipse cx="18" cy="32" rx="4" ry="10" fill="#81b29a" transform="rotate(-20 18 32)" />
+                    <ellipse cx="32" cy="32" rx="4" ry="10" fill="#81b29a" transform="rotate(20 32 32)" />
+                    <path d="M25 20 L25 42" stroke="#81b29a" stroke-width="2" />
+                </svg>
+                <span class="line"></span>
+            </div>
+
+            <div class="letter-body" id="letter-body">
+                <!-- Aquí se insertará el contenido de la carta -->
+            </div>
+
+            <div class="letter-flowers">
+                <svg class="letter-flower" viewBox="0 0 50 50">
+                    <circle cx="25" cy="15" r="10" fill="#e07a5f" />
+                    <circle cx="17" cy="22" r="6" fill="#d4a5a5" />
+                    <circle cx="33" cy="22" r="6" fill="#d4a5a5" />
+                    <ellipse cx="20" cy="35" rx="5" ry="12" fill="#81b29a" transform="rotate(-15 20 35)" />
+                    <ellipse cx="30" cy="35" rx="5" ry="12" fill="#81b29a" transform="rotate(15 30 35)" />
+                    <path d="M25 20 L25 48" stroke="#81b29a" stroke-width="2" />
+                </svg>
+                <svg class="letter-flower" viewBox="0 0 50 50">
+                    <circle cx="25" cy="20" r="8" fill="#f0d060" />
+                    <ellipse cx="25" cy="8" rx="5" ry="10" fill="white" stroke="#e8e0d8" />
+                    <ellipse cx="13" cy="16" rx="5" ry="10" fill="white" stroke="#e8e0d8"
+                        transform="rotate(-60 13 16)" />
+                    <ellipse cx="37" cy="16" rx="5" ry="10" fill="white" stroke="#e8e0d8"
+                        transform="rotate(60 37 16)" />
+                    <ellipse cx="15" cy="30" rx="5" ry="10" fill="white" stroke="#e8e0d8"
+                        transform="rotate(-120 15 30)" />
+                    <ellipse cx="35" cy="30" rx="5" ry="10" fill="white" stroke="#e8e0d8"
+                        transform="rotate(120 35 30)" />
+                    <path d="M25 28 L25 48" stroke="#81b29a" stroke-width="2" />
+                </svg>
+            </div>
+
+            <div class="floral-divider">
+                <span class="line"></span>
+                <svg viewBox="0 0 24 24" fill="#e07a5f">
+                    <path
+                        d="M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z" />
+                </svg>
+                <span class="line"></span>
+            </div>
+
+            <div class="letter-signature">
+                <p class="closing">Con todo el amor del mundo,</p>
+            </div>
+        </div>
+    </div>
+
+    <!-- Audios -->
+    <audio id="pop-sound" preload="auto">
+        <source src="pop.mp3" type="audio/mpeg">
+    </audio>
+    <audio id="bg-music" loop preload="auto">
+        <source src="madre.mp3" type="audio/mpeg">
+    </audio>
+
+    <script>
+        // ============================================
+        // VARIABLES
+        // ============================================
+        let welcomeScreen = null;
+        let welcomeInput = null;
+        let welcomeButton = null;
+        let welcomeError = null;
+        let mainPage = null;
+        let displayName = null;
+        let letterName = null;
+        let bouquet = null;
+        let bouquetButton = null;
+        let letterEmerging = null;
+        let letterOverlay = null;
+        let closeButton = null;
+        let canvas = null;
+        let ctx = null;
+        let floatingPetalsContainer = null;
+        let popSound = null;
+        let bgMusic = null;
+        let letterBody = null;
+        let signatureName = null;
+
+        let isOpen = false;
+        let confettiParticles = [];
+        let userName = '';
+
+        // ============================================
+        // FUNCIÓN PARA NORMALIZAR TEXTO (quitar tildes y pasar a minúsculas)
+        // ============================================
+        function normalizarTexto(texto) {
+            return texto
+                .toLowerCase()
+                .normalize('NFD')
+                .replace(/[\u0300-\u036f]/g, '') // Quita tildes
+                .replace(/[^a-z0-9\s]/g, ' ')    // Reemplaza caracteres especiales por espacio
+                .trim();
+        }
+
+        // ============================================
+        // FUNCIÓN PARA DETECTAR TIPO DE CARTA
+        // ============================================
+        function detectarTipoCarta(nombre) {
+            const nombreNormalizado = normalizarTexto(nombre);
+            const palabras = nombreNormalizado.split(/\s+/);
+
+            // Palabras clave para cada tipo (todas normalizadas, sin tildes)
+            const palabrasMadrina = ['jenny', 'patricia', 'pato', 'sandra', 'yuleth', 'gil', 'moreno', 'palacios'];
+            const palabrasTia = ['rocio', 'nardy', 'barreto'];
+            const palabrasMami = ['claudia', 'mama', 'barreto'];
+            const palabrasAbuelita = ['julia', 'madresita', 'aldana'];
+            const palabrasTata = ['tata', 'de', 'rodriguez', 'hernandez'];
+
+            // Función para verificar si alguna palabra coincide
+            function contienePalabra(listaPalabras) {
+                return palabras.some(p => listaPalabras.includes(p));
+            }
+
+            // Verificar en orden de prioridad
+            if (contienePalabra(palabrasMadrina)) {
+                return 'madrina';
+            }
+            if (contienePalabra(palabrasTia)) {
+                return 'tia';
+            }
+            if (contienePalabra(palabrasMami)) {
+                return 'mami';
+            }
+            if (contienePalabra(palabrasAbuelita)) {
+                return 'abuelita';
+            }
+            if (contienePalabra(palabrasTata)) {
+                return 'tata';
+            }
+
+            return 'predeterminada';
+        }
+
+        // ============================================
+        // CARTAS PERSONALIZADAS - EDITA AQUÍ
+        // ============================================
+
+        const cartas = {
+            mami: `
+        <p>
+            Mami, en este dia tan especial quiero recordarte lo muchisimo que te amo y lo agradecida que estoy 
+            con la vida y con Dios por tenerte. No existen palabras suficientes para describir todo lo que significas 
+            para mi, porque tu no solo has sido mi mama… tambien has sido mi papa, mi amiga, mi companera, 
+            mi refugio, mi hogar y mi familia entera.
+        </p>
+
+        <p>
+            Quiero darte las gracias por <span class="highlight">cada sacrificio que hiciste y sigues haciendo por mi</span>. 
+            Gracias por cada madrugada sin dormir, por cada esfuerzo silencioso, por cada lagrima que seguramente 
+            escondiste para verme feliz. Nunca me falto nada, porque aunque las cosas fueran dificiles, 
+            tu siempre encontraste la manera de sacarnos adelante.
+        </p>
+
+        <p>
+            Desde pequena siempre hemos sido las dos contra el mundo. 
+            <span class="highlight">Mi bua caca, mi mami, la gueina de la casa</span>. 
+            Siempre juntas, siempre apoyandonos, siempre saliendo adelante de la mano. 
+            Y aunque muchas veces la vida no fue facil, tu jamas te rendiste. 
+            Eres una verdadera guerrera y la mujer mas fuerte que conozco.
+        </p>
+
+        <p>
+            Quiero que sepas que eres y siempre seras mi mayor inspiracion y mi motor para seguir adelante. 
+            Todo lo que hago, cada meta que quiero cumplir y cada esfuerzo que hago en mi vida, 
+            siempre tiene tu nombre en mi corazon, porque mi mayor sueno es verte feliz, tranquila 
+            y teniendo todo lo que alguna vez sonaste.
+        </p>
+
+        <p>
+            Y miranos ahora… gracias a Dios y a todo el esfuerzo que hiciste durante tantos anos, 
+            hoy cumpliste uno de tus suenos mas grandes: 
+            <span class="highlight">tener tu apartamento propio</span>. 
+            Y creeme que eso me llena el alma de orgullo, porque nadie merece mas ese logro que tu.
+        </p>
+
+        <p>
+            Pero esto apenas comienza, mami. Dios quiera que la vida nos permita cumplir muchos suenos mas juntas, 
+            y yo voy a esforzarme todos los dias para ayudarte a lograr todo lo que quieras.
+        </p>
+
+        <p>
+            Estoy demasiado orgullosa de la mujer que eres. Orgullosa de ti como madre, amiga, companera, hija 
+            y como persona, porque siempre lo has dado todo por quienes amas, incluso cuando tu eras la que mas 
+            necesitaba descanso.
+        </p>
+
+        <p>
+            Gracias por ensenarme a ser fuerte, por ensenarme el valor del esfuerzo, de la humildad y del amor verdadero. 
+            Gracias por nunca soltarme la mano.
+        </p>
+
+        <p>
+            No importa cuanto crezca, siempre voy a necesitar de tus abrazos, tus consejos y tu amor. 
+            Eres la persona mas importante de mi vida y espero que nunca olvides lo especial, valiente 
+            y maravillosa que eres.
+        </p>
+
+        <p>
+            Feliz Dia de las Madres, mami. 
+            <span class="highlight">Te amo con toda mi alma, hoy, manana y siempre ❤️</span>
+        </p>
+    `,
+
+            madrina: `
+    <p>
+        Madrina querida, en este dia tan especial quiero recordarte lo importante que eres para mi 
+        y lo agradecida que estoy por tenerte en mi vida. Mas que una madrina, has sido como una 
+        segunda mama, una guia y una persona a la que siempre he admirado profundamente.
+    </p>
+
+    <p>
+        Gracias por estar presente en tantos momentos de mi vida, por tus consejos, tus reganos, 
+        tus risas y por cada palabra que me ha ayudado a crecer. 
+        <span class="highlight">Tu amor, tu apoyo y tu manera de ser han dejado huellas muy bonitas en mi corazon</span>.
+    </p>
+
+    <p>
+        Gracias tambien por siempre apoyarme y por convertirte en un gran apoyo para mi en tantos momentos. 
+        Saber que cuento contigo me ha dado mucha tranquilidad, fuerza y confianza para seguir adelante.
+    </p>
+
+    <p>
+        Quiero que sepas que admiro muchisimo el papel tan increible que haces como madre. 
+        He visto todo el amor, el esfuerzo y la dedicacion 
+        con la que has salido adelante. 
+        <span class="highlight">Has tomado el papel de madre y padre al mismo tiempo, y eso te convierte en una mujer verdaderamente guerrera</span>.
+    </p>
+
+    <p>
+        Siempre te he visto como un ejemplo a seguir, no solo como madre, sino tambien como persona 
+        y como hija. Admiro mucho la mujer que eres, tu fortaleza, tu manera de salir adelante 
+        y todo lo que has logrado con esfuerzo y dedicacion.
+    </p>
+
+    <p>
+        Me siento muy orgullosa de ti y de todo lo que representas para nuestra familia. 
+        Tenerte en mi vida es una bendicion enorme y siempre voy a valorar cada recuerdo, 
+        cada consejo y cada momento compartido contigo.
+    </p>
+
+    <p>
+        Le pido mucho a Dios que siga llenando tu vida de salud, amor, felicidad y muchisimas bendiciones, 
+        porque eres una persona maravillosa que merece cosas hermosas.
+    </p>
+
+    <p>
+        Feliz Dia de las Madres, Madrina. 
+        <span class="highlight">Te quiero muchisimo y siempre tendras un lugar muy especial en mi corazon ❤️</span>.
+    </p>
+`,
+
+            tia: `
+    <p>
+        Tia querida, en este dia tan especial quiero darte las gracias por todo lo que has hecho por mi 
+        y por mi mami. Quiero que sepas que eres una persona demasiado importante en mi vida 
+        y que siempre vas a ocupar un lugar enorme en mi corazon.
+    </p>
+
+    <p>
+        No eres solo mi tia, tambien eres mi tia madrina y mi segunda mama. 
+        <span class="highlight">Te adoro con toda mi alma mas de lo que te imaginas</span>, 
+        y quiero que nunca dudes de lo especial y valiosa que eres para mi. 
+        Los aprecio a todos demasiado y me siento muy afortunada de tenerlos en mi vida.
+    </p>
+
+    <p>
+        Gracias por cada consejo, por cada risa, por cada momento bonito y por todo el apoyo que me has dado. 
+        Las risas contigo nunca faltan y quiero que sepas que me has ayudado muchisimo en muchos momentos 
+        de mi vida, incluso mas de lo que imaginas.
+    </p>
+
+    <p>
+        Tambien quiero decirte que nunca dudes del gran trabajo que estas haciendo como mama. 
+        Eres una mujer increible, dulce, amorosa y una verdadera guerrera. 
+        Que pequenas acciones o momentos dificiles nunca te hagan pensar que lo estas haciendo mal, 
+        porque eres un ejemplo a seguir y una madre maravillosa.
+    </p>
+
+    <p>
+        Admiro demasiado la mujer que eres y me siento muy orgullosa de todo lo que has logrado. 
+        Se nota todo el esfuerzo, el amor y la dedicacion que pones en cada cosa que haces. 
+        Y estoy segura de que Dios seguira trayendo muchisimas bendiciones a tu vida 
+        y te permitira cumplir muchisimos cosas mas.
+    </p>
+
+    <p>
+        Gracias por siempre estar, por escucharme, apoyarme y quererme tanto. 
+        Tenerte en mi vida es una bendicion enorme y espero que nunca olvides lo importante y especial 
+        que eres para mi.
+    </p>
+
+    <p>
+        Feliz Dia de las Madres, tia. 
+        <span class="highlight">Te amo muchisimo ❤️</span>.
+    </p>
+`,
+
+            abuelita: `
+    <p>
+        Abuelita hermosa, en este dia tan especial quiero recordarte lo muchisimo que te amo 
+        y lo agradecida que estoy con Dios por tenerte en mi vida. 
+        <span class="highlight">Te amo con todo mi ser</span> y quiero que nunca olvides 
+        lo importante y especial que eres para mi y para toda nuestra familia.
+    </p>
+
+    <p>
+        Gracias por criarme, cuidarme y darme tanto amor desde pequena. 
+        Gran parte de quien soy hoy tambien es gracias a ti. 
+        Gracias por cada consejo, cada abrazo, cada comida hecha con amor y cada momento 
+        en el que estuviste para mi.
+    </p>
+
+    <p>
+        Gracias por ser tan alcahueta conmigo jajaja, por consentirme, cuidarme y quererme siempre 
+        con ese amor tan bonito que solo una abuelita sabe dar. Tus abrazos, tus consejos, tus palabras 
+        y tu forma de demostrar amor hacen que todo se sienta mas tranquilo y mas bonito.
+    </p>
+
+    <p>
+        Admiro profundamente la mujer que eres y todo lo que hiciste como madre. 
+        Eres una verdadera mujer guerrera, fuerte y luchadora. 
+        Gracias por cada esfuerzo, por cada sacrificio y por todo lo que haces cada dia 
+        por las personas que amas.
+    </p>
+
+    <p>
+        Y como abuela… ni se diga. 
+        <span class="highlight">El papel que haces como abuelita es simplemente increible</span>. 
+        Siempre estas pendiente de todos, 
+        dando amor, consejos y haciendo sentir a la familia unida y querida.
+    </p>
+
+    <p>
+        Gracias por cada momento compartido, por cada risa, cada historia y cada detalle bonito 
+        que guardo con muchisimo amor en mi corazon. 
+        Tu presencia en nuestra vida es una bendicion enorme y espero que Dios te llene siempre 
+        de salud, felicidad, amor y muchisimos anos mas junto a nosotros.
+    </p>
+
+    <p>
+        Espero que siempre recuerdes lo admirable, fuerte y maravillosa que eres, 
+        porque has construido una familia llena de amor gracias a todo lo que nos has ensenado.
+    </p>
+
+    <p>
+        Feliz Dia de las Madres, madrecita. 
+        <span class="highlight">Te amo infinitamente ❤️</span>.
+    </p>
+`,
+
+            tata: `
+    <p>
+        Tata hermosa, en este dia tan especial quiero recordarte lo muchisimo que te amo 
+        y agradecerte por todo lo que has hecho por mi a lo largo de mi vida. 
+        <span class="highlight">Gracias por criarme, cuidarme y darme tanto amor</span>.
+    </p>
+
+    <p>
+        Gracias por cada consejo, cada abrazo, cada comida hecha con amor y cada momento en el que estuviste para mi. 
+        Siempre has sido una persona fundamental en mi vida y no imaginas lo mucho que valoro todo lo que hiciste 
+        y sigues haciendo por mi.
+    </p>
+
+    <p>
+        Admiro profundamente la mujer tan fuerte, trabajadora y guerrera que eres. 
+        Gracias por todos los sacrificios y esfuerzos que hiciste como madre y tambien como abuela. 
+        Nunca fue facil, pero aun asi siempre sacaste adelante a tu familia con amor y valentia.
+    </p>
+
+    <p>
+        Como abuelita eres simplemente increible. 
+        <span class="highlight">Tu amor, tu ternura y tu manera de consentirme hacen que seas unica</span>. 
+        Gracias por estar siempre pendiente de mi, por apoyarme y por quererme tanto.
+    </p>
+
+    <p>
+        Me siento demasiado afortunada de tenerte en mi vida y espero que Dios te siga llenando 
+        de salud, felicidad, tranquilidad y muchisimas bendiciones, porque te mereces todo lo bonito 
+        que existe en este mundo.
+    </p>
+
+    <p>
+        Gracias por ser mi Tata, mi apoyo y una de las personas mas importantes de mi vida. 
+        Nunca voy a dejar de agradecerle a Dios por ti.
+    </p>
+
+    <p>
+        Feliz Dia de las Madres, Tata. 
+        <span class="highlight">Te amo con todo mi corazon ❤️</span>.
+    </p>
+`,
+
+            predeterminada: (nombre) => `
+    <p>
+        En este dia tan especial quiero recordarte lo valiosa, fuerte y maravillosa que eres. 
+        Ser madre no es una tarea facil, y aun asi cada dia das lo mejor de ti con amor, paciencia 
+        y una fortaleza admirable.
+    </p>
+
+    <p>
+        Gracias por cada sacrificio, cada consejo, cada abrazo y cada esfuerzo silencioso que haces 
+        por las personas que amas. 
+        <span class="highlight">Tu amor y dedicacion dejan huellas muy bonitas en quienes te rodean</span>.
+    </p>
+
+    <p>
+        Nunca dudes del gran trabajo que haces como mama, porque eres un verdadero ejemplo de amor, 
+        valentia y entrega. Incluso en los momentos dificiles sigues adelante con el corazon lleno 
+        de fuerza y dando siempre lo mejor de ti.
+    </p>
+
+    <p>
+        Espero que Dios siga llenando tu vida de salud, felicidad, tranquilidad y muchisimas bendiciones, 
+        porque mereces cosas hermosas por todo el amor que entregas cada dia.
+    </p>
+
+    <p>
+        Gracias por ser una mujer tan increible, amorosa y especial. 
+        El mundo necesita mas personas con un corazon tan bonito como el tuyo.
+    </p>
+
+    <p>
+        Feliz Dia de las Madres. 
+        <span class="highlight">Que hoy y siempre seas muy feliz ❤️</span>.
+    </p>
+`,
+        };
+
+        // Firmas para cada tipo
+        const firmas = {
+            mami: 'Tu princesa que te ama',
+            madrina: 'Tu ahijada que te ama',
+            tia: 'Tu muñeca que te ama',
+            abuelita: 'Tu Nica que te adora',
+            tata: 'Tu princesa que te adora',
+            predeterminada: 'Claudia y Nicoll'
+        };
+
+        // ============================================
+        // FUNCIÓN PARA OBTENER CARTA
+        // ============================================
+        function obtenerCarta(tipoCarta, nombre) {
+            if (tipoCarta === 'predeterminada') {
+                return cartas.predeterminada(nombre);
+            }
+            return cartas[tipoCarta] || cartas.predeterminada(nombre);
+        }
+
+        // ============================================
+        // DOM READY
+        // ============================================
+        document.addEventListener('DOMContentLoaded', function () {
+            welcomeScreen = document.getElementById('welcome-screen');
+            welcomeInput = document.getElementById('user-name');
+            welcomeButton = document.getElementById('welcome-button');
+            welcomeError = document.getElementById('welcome-error');
+            mainPage = document.getElementById('main-page');
+            displayName = document.getElementById('display-name');
+            letterName = document.getElementById('letter-name');
+            bouquet = document.getElementById('bouquet');
+            bouquetButton = document.getElementById('bouquet-button');
+            letterEmerging = document.getElementById('letter-emerging');
+            letterOverlay = document.getElementById('letter-overlay');
+            closeButton = document.getElementById('close-button');
+            canvas = document.getElementById('confetti-canvas');
+            floatingPetalsContainer = document.getElementById('floating-petals');
+            popSound = document.getElementById('pop-sound');
+            bgMusic = document.getElementById('bg-music');
+            letterBody = document.getElementById('letter-body');
+            signatureName = document.getElementById('signature-name');
+
+            if (canvas) {
+                ctx = canvas.getContext('2d');
+                resizeCanvas();
+            }
+
+            setupEvents();
+            initFloatingPetals();
+            createDaisyPetals();
+        });
+
+        // ============================================
+        // CREAR PÉTALOS DE MARGARITA
+        // ============================================
+        function createDaisyPetals() {
+            const daisyHead = document.getElementById('daisy-head-1');
+            if (!daisyHead) return;
+
+            const petalCount = 12;
+            for (let i = 0; i < petalCount; i++) {
+                const petal = document.createElement('div');
+                petal.className = 'daisy-petal';
+                const rotation = (i * 360 / petalCount) - 90;
+                petal.style.transform = `translate(-50%, -100%) rotate(${rotation}deg)`;
+                daisyHead.appendChild(petal);
+            }
+        }
+
+        // ============================================
+        // EVENTOS
+        // ============================================
+        function setupEvents() {
+            // Pantalla de bienvenida
+            if (welcomeButton) {
+                welcomeButton.addEventListener('click', submitName);
+            }
+
+            if (welcomeInput) {
+                welcomeInput.addEventListener('keypress', function (e) {
+                    if (e.key === 'Enter') submitName();
+                });
+            }
+
+            // Ramo
+            if (bouquetButton) {
+                bouquetButton.addEventListener('click', openBouquet);
+            }
+
+            if (closeButton) {
+                closeButton.addEventListener('click', closeLetter);
+            }
+
+            if (letterOverlay) {
+                letterOverlay.addEventListener('click', closeLetter);
+            }
+
+            document.addEventListener('keydown', function (e) {
+                if (e.key === 'Escape' && isOpen) {
+                    closeLetter();
+                }
+            });
+
+            window.addEventListener('resize', resizeCanvas);
+        }
+
+        // ============================================
+        // ENVIAR NOMBRE
+        // ============================================
+        function submitName() {
+            const name = welcomeInput.value.trim();
+
+            if (name.length < 2) {
+                showError('Por favor, escribe tu nombre para continuar.');
+                return;
+            }
+
+            userName = name;
+
+            // Detectar tipo de carta
+            const tipoCarta = detectarTipoCarta(name);
+
+            // Ocultar pantalla de bienvenida
+            if (welcomeScreen) {
+                welcomeScreen.classList.add('hidden');
+            }
+
+            // Mostrar página principal
+            setTimeout(function () {
+                if (mainPage) {
+                    mainPage.style.display = 'flex';
+                }
+
+                // Actualizar nombre en todos los lugares
+                if (displayName) {
+                    displayName.textContent = userName;
+                }
+
+                if (letterName) {
+                    letterName.textContent = userName;
+                }
+
+                // Asignar el contenido de la carta
+                if (letterBody) {
+                    letterBody.innerHTML = obtenerCarta(tipoCarta, name);
+                }
+
+                // Actualizar firma
+                if (signatureName) {
+                    signatureName.textContent = firmas[tipoCarta] || firmas.predeterminada;
+                }
+            }, 400);
+        }
+
+        function showError(message) {
+            if (welcomeError) {
+                welcomeError.textContent = message;
+                welcomeError.classList.add('visible');
+                welcomeInput.style.borderColor = 'var(--accent-coral)';
+                welcomeInput.style.animation = 'shake 0.5s ease';
+
+                setTimeout(function () {
+                    welcomeError.classList.remove('visible');
+                    welcomeInput.style.borderColor = '';
+                    welcomeInput.style.animation = '';
+                }, 2500);
+            }
+        }
+
+        // ============================================
+        // PARTÍCULAS DE EXPLOSIÓN
+        // ============================================
+        function createBurstParticles() {
+            if (!bouquetButton) return;
+
+            const rect = bouquetButton.getBoundingClientRect();
+            const centerX = rect.left + rect.width / 2;
+            const centerY = rect.top + rect.height / 2;
+
+            const colors = ['#e07a5f', '#d4a5a5', '#81b29a', '#f0d060', '#ffb6c1', '#ffd700'];
+
+            for (let i = 0; i < 25; i++) {
+                const particle = document.createElement('div');
+                particle.style.cssText = `
+                    position: fixed;
+                    left: ${centerX}px;
+                    top: ${centerY}px;
+                    width: ${Math.random() * 12 + 6}px;
+                    height: ${Math.random() * 12 + 6}px;
+                    background: ${colors[Math.floor(Math.random() * colors.length)]};
+                    border-radius: ${Math.random() > 0.5 ? '50%' : '2px'};
+                    pointer-events: none;
+                    z-index: 300;
+                    animation: particleFly 0.8s ease-out forwards;
+                    --tx: ${Math.cos(Math.random() * Math.PI * 2) * (Math.random() * 180 + 80)}px;
+                    --ty: ${Math.sin(Math.random() * Math.PI * 2) * (Math.random() * 180 + 80)}px;
+                `;
+
+                document.body.appendChild(particle);
+
+                setTimeout(function () {
+                    if (particle.parentNode) particle.remove();
+                }, 800);
+            }
+        }
+
+        // ============================================
+        // ABRIR RAMO
+        // ============================================
+        function openBouquet() {
+            if (isOpen) return;
+            isOpen = true;
+
+            playSound(popSound, 0.5);
+            playSound(bgMusic, 0.25);
+
+            // Crear explosión de partículas
+            createBurstParticles();
+
+            if (bouquetButton) {
+                bouquetButton.classList.add('hidden');
+            }
+
+            if (bouquet) {
+                bouquet.classList.add('opening');
+            }
+
+            launchConfetti();
+
+            setTimeout(function () {
+                if (letterOverlay) {
+                    letterOverlay.classList.add('visible');
+                }
+                if (letterEmerging) {
+                    letterEmerging.classList.add('visible');
+                }
+            }, 500);
+        }
+
+        // ============================================
+        // CERRAR CARTA
+        // ============================================
+        function closeLetter() {
+            if (!isOpen) return;
+
+            if (letterEmerging) {
+                letterEmerging.classList.remove('visible');
+                letterEmerging.style.opacity = '0';
+                letterEmerging.style.transform = 'translate(-50%, -50%) scale(0.1)';
+            }
+
+            if (letterOverlay) {
+                letterOverlay.classList.remove('visible');
+            }
+
+            setTimeout(function () {
+                if (letterEmerging) {
+                    letterEmerging.style.opacity = '';
+                    letterEmerging.style.transform = '';
+                }
+                if (bouquet) {
+                    bouquet.classList.remove('opening');
+                }
+                if (bouquetButton) {
+                    bouquetButton.classList.remove('hidden');
+                }
+                isOpen = false;
+            }, 300);
+        }
+
+        // ============================================
+        // SONIDOS
+        // ============================================
+        function playSound(audio, volume) {
+            if (audio) {
+                audio.currentTime = 0;
+                audio.volume = volume;
+                audio.play().catch(function () { });
+            }
+        }
+
+        // ============================================
+        // CANVAS
+        // ============================================
+        function resizeCanvas() {
+            if (canvas) {
+                canvas.width = window.innerWidth;
+                canvas.height = window.innerHeight;
+            }
+        }
+
+        // ============================================
+        // CONFETI (PÉTALOS)
+        // ============================================
+        function launchConfetti() {
+            if (!ctx || !canvas) return;
+
+            confettiParticles = [];
+            const colors = ['#e07a5f', '#d4a5a5', '#81b29a', '#f0d060', '#ffb6c1', '#ffd700', '#ffe8d6'];
+
+            for (let i = 0; i < 180; i++) {
+                confettiParticles.push({
+                    x: canvas.width / 2 + (Math.random() - 0.5) * 200,
+                    y: canvas.height * 0.5,
+                    w: Math.random() * 14 + 6,
+                    h: Math.random() * 10 + 4,
+                    color: colors[Math.floor(Math.random() * colors.length)],
+                    rotation: Math.random() * 360,
+                    rotSpeed: (Math.random() - 0.5) * 15,
+                    vx: (Math.random() - 0.5) * 18,
+                    vy: Math.random() * -20 - 8,
+                    gravity: 0.35,
+                    opacity: 1,
+                    shape: Math.random() > 0.4 ? 'petal' : 'circle',
+                    wobble: Math.random() * 10
+                });
+            }
+
+            animateConfetti();
+        }
+
+        function animateConfetti() {
+            if (!ctx || !canvas) return;
+
+            ctx.clearRect(0, 0, canvas.width, canvas.height);
+
+            let active = false;
+
+            for (let i = 0; i < confettiParticles.length; i++) {
+                const p = confettiParticles[i];
+
+                if (p.opacity <= 0) continue;
+
+                active = true;
+
+                p.x += p.vx;
+                p.y += p.vy;
+                p.vy += p.gravity;
+                p.rotation += p.rotSpeed;
+                p.wobble += 0.1;
+                p.vx += Math.sin(p.wobble) * 0.3;
+
+                if (p.y > canvas.height - 50) {
+                    p.opacity -= 0.03;
+                }
+
+                ctx.save();
+                ctx.translate(p.x, p.y);
+                ctx.rotate(p.rotation * Math.PI / 180);
+                ctx.globalAlpha = Math.max(0, p.opacity);
+                ctx.fillStyle = p.color;
+
+                if (p.shape === 'petal') {
+                    ctx.beginPath();
+                    ctx.ellipse(0, 0, Math.max(0.1, p.w / 2), Math.max(0.1, p.h / 2), 0, 0, Math.PI * 2);
+                    ctx.fill();
+                } else {
+                    ctx.beginPath();
+                    ctx.arc(0, 0, Math.max(0.1, p.w / 3), 0, Math.PI * 2);
+                    ctx.fill();
+                }
+
+                ctx.restore();
+            }
+
+            if (active) {
+                requestAnimationFrame(animateConfetti);
+            } else {
+                ctx.clearRect(0, 0, canvas.width, canvas.height);
+            }
+        }
+
+        // ============================================
+        // PÉTALOS FLOTANTES
+        // ============================================
+        function initFloatingPetals() {
+            for (let i = 0; i < 3; i++) {
+                setTimeout(createFloatingPetal, i * 800);
+            }
+            setInterval(createFloatingPetal, 2200);
+        }
+
+        function createFloatingPetal() {
+            if (!floatingPetalsContainer) return;
+
+            const petal = document.createElement('div');
+            petal.className = 'floating-petal';
+
+            const size = Math.random() * 18 + 22;
+            const left = Math.random() * 92;
+            const duration = Math.random() * 8 + 12;
+            const delay = Math.random() * 1.5;
+
+            const colors = ['#e07a5f', '#d4a5a5', '#81b29a', '#f0d060', '#ffb6c1'];
+            const color = colors[Math.floor(Math.random() * colors.length)];
+
+            petal.style.left = left + '%';
+            petal.style.animationDuration = duration + 's';
+            petal.style.animationDelay = delay + 's';
+
+            petal.innerHTML = `<svg width="${size}" height="${size * 1.3}" viewBox="0 0 20 26" fill="${color}">
+                <ellipse cx="10" cy="13" rx="8" ry="12" opacity="0.7"/>
+            </svg>`;
+
+            floatingPetalsContainer.appendChild(petal);
+
+            setTimeout(function () {
+                if (petal.parentNode) petal.remove();
+            }, (duration + delay + 2) * 1000);
+        }
+
+        // Agregar animación shake y particleFly
+        const styleSheet = document.createElement('style');
+        styleSheet.textContent = `
+            @keyframes shake {
+                0%, 100% { transform: translateX(0); }
+                20% { transform: translateX(-8px); }
+                40% { transform: translateX(8px); }
+                60% { transform: translateX(-5px); }
+                80% { transform: translateX(5px); }
+            }
+            @keyframes particleFly {
+                0% { 
+                    transform: translate(0, 0) scale(1); 
+                    opacity: 1; 
+                }
+                100% { 
+                    transform: translate(var(--tx), var(--ty)) scale(0); 
+                    opacity: 0; 
+                }
+            }
+        `;
+        document.head.appendChild(styleSheet);
+    </script>
+</body>
+
+</html>
